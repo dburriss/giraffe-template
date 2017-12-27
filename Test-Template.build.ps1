@@ -30,6 +30,29 @@ Param(
     [switch]$Keep=$false
 )
 
+function not-exist { -not (Test-Path $args) }
+Set-Alias !exist not-exist -Option "Constant, AllScope"
+Set-Alias exist Test-Path -Option "Constant, AllScope"
+function isTrue {
+    Param
+    (
+        [Parameter(Mandatory=$true)]
+        [boolean]$DoesExist,
+        [Parameter(Mandatory=$true)]
+        [string]$ErrorMessage
+    )
+
+    if($DoesExist -ne $true) { throw $ErrorMessage }
+}
+
+function exists{
+    Param
+    (
+        [Parameter(Mandatory=$true)]
+        [string]$Path
+    )
+    isTrue (exist $Path) "ERROR: $Path does not exist"
+}
 function New-TemporaryDirectoryPath {
     $parent = [System.IO.Path]::GetTempPath()
     $name = [System.IO.Path]::GetRandomFileName()
@@ -79,6 +102,36 @@ task Start-Build {
     }
 }
 
+task Test-Artifacts {
+    exec {
+        exists $temp
+        if($IncludeTests){
+            exists "$temp\src\$name\$name.fsproj"
+            exists "$temp\tests\$name.Tests\$name.Tests.fsproj"
+            exists "$temp\tests\$name.Tests\Tests.fs"
+            if($UsePaket){
+                exists "$temp\tests\$name.Tests\paket.references"
+            }
+        }
+        if($UsePaket){
+            exists "$temp\.paket\paket.exe"
+            exists "$temp\.paket\"
+            exists "$temp\paket.dependencies"
+            exists "$temp\src\$name\paket.references"
+        }
+        if($ViewEngine -eq "Razor"){
+            exists "$temp\src\$name\Models.fs"
+            exists "$temp\src\$name\Views\_Layout.cshtml"
+            exists "$temp\src\$name\Views\Index.cshtml"
+            exists "$temp\src\$name\Views\Partial.cshtml"
+        }
+        if($ViewEngine -eq "DotLiquid"){
+            exists "$temp\src\$name\Models.fs"
+            exists "$temp\src\$name\Views\Index.html"
+        }
+    }
+}
+
 task Remove-Temp -If (-Not $Keep) {
     "Cleaning up..."
     Remove-Item $temp -Recurse
@@ -98,4 +151,29 @@ task Get-Original {
     &cd $originaldir
 }
 
-task . New-Solution, Start-Build, Remove-Temp, Open-Temp, Get-Original
+task Test-Permutations Install-Templates, {
+    Invoke-Builds @(
+        #some defaults
+        @{File='Test-Templates.build.ps1'; }
+        @{File='Test-Templates.build.ps1'; IncludeTests=$true}
+        @{File='Test-Templates.build.ps1'; UsePaket=$true}
+        @{File='Test-Templates.build.ps1'; IncludeTests=$true; UsePaket=$true}
+        #Giraffe
+        @{File='Test-Templates.build.ps1'; ViewEngine="Giraffe"; IncludeTests=$false; UsePaket=$false}
+        @{File='Test-Templates.build.ps1'; ViewEngine="Giraffe"; IncludeTests=$true; UsePaket=$false}
+        @{File='Test-Templates.build.ps1'; ViewEngine="Giraffe"; IncludeTests=$false; UsePaket=$true}
+        @{File='Test-Templates.build.ps1'; ViewEngine="Giraffe"; IncludeTests=$true; UsePaket=$true}
+        #Razor
+        @{File='Test-Templates.build.ps1'; ViewEngine="Razor"; IncludeTests=$false; UsePaket=$false}
+        @{File='Test-Templates.build.ps1'; ViewEngine="Razor"; IncludeTests=$true; UsePaket=$false}
+        @{File='Test-Templates.build.ps1'; ViewEngine="Razor"; IncludeTests=$false; UsePaket=$true}
+        @{File='Test-Templates.build.ps1'; ViewEngine="Razor"; IncludeTests=$true; UsePaket=$true}
+        #DotLiquid
+        @{File='Test-Templates.build.ps1'; ViewEngine="DotLiquid"; IncludeTests=$false; UsePaket=$false}
+        @{File='Test-Templates.build.ps1'; ViewEngine="DotLiquid"; IncludeTests=$true; UsePaket=$false}
+        @{File='Test-Templates.build.ps1'; ViewEngine="DotLiquid"; IncludeTests=$false; UsePaket=$true}
+        @{File='Test-Templates.build.ps1'; ViewEngine="DotLiquid"; IncludeTests=$true; UsePaket=$true}
+    )
+}
+
+task . New-Solution, Test-Artifacts, Start-Build, Remove-Temp, Open-Temp, Get-Original
