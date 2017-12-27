@@ -7,7 +7,7 @@ REQUIRES: https://github.com/nightroman/Invoke-Build
 This Powershell script will create a temporary folder, optionally install the template if supplied with -InstallTemplates, copy the necessary files in, and run `dotnet new `
 
 .PARAMETER name
-The descriptive name of your solution. Defaults to current directory name. Default: AliG
+The descriptive name of your solution. Default: AliG
 .PARAMETER ViewEngine
 Tells the script which view engine to use. Giraffe, Razor, DotLiquid, None. Default: Giraffe
 .PARAMETER IncludeTests

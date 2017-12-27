@@ -115,6 +115,57 @@ https://ci.appveyor.com/nuget/giraffe-template
 
 If you add this source to your NuGet CLI or project settings then you can pull unofficial NuGet packages for quick feature testing or urgent hot fixes.
 
+## Contributing
+
+### CI/CD
+
+Whenever making changes to the template be sure that running `build.ps1` can execute successfully. This is used by the build system to verify the project still builds ok.
+
+### Testing template generation
+
+#### Requirements
+
+- Powershell
+- [Invoke-Build](https://github.com/nightroman/Invoke-Build)
+
+[See how to install Invoke-Build here](https://github.com/nightroman/Invoke-Build#install-as-module).
+
+#### Testing Specific configurations
+
+You can then test specific configurations by running the default task with the desired options:
+
+```powershell
+Invoke-Build -InstallTemplates -IncludeTests -UsePaket
+```
+
+##### Options
+
+- **ViewEngine** - Tells the script which view engine to use. Giraffe, Razor, DotLiquid, None. Default: Giraffe
+- **IncludeTests** - Tells the script to include creation of a web test project. Default: false
+- **UsePaket** - Tells the script to Paket package management instead of Nuget. Default: false
+- **InstallTemplates** - Tells the script to install the template before running. Default: false
+- **Keep** - Tells the script to keep the generated files even if fails. Default: false
+
+#### Testing all permutations
+
+You can test all the configured permutations of template parameters by running:
+
+```powershell
+Invoke-Build Test-Permutations
+```
+
+> A warning that this will take a few minutes to complete.
+
+### Updating Paket lock files
+
+If you make changes to the *fsproj* and *paket.dependencies* files, or want to upgrade package versions in the template, you will likely need to update the *paket.lock* files for the different options. This can easily be done by running the **Update-AllPaketLock** task.
+
+```powershell
+Invoke-Build Update-AllPaketLock
+```
+
+This will generate the *paket.lock* files for the different configurations and copy them into the template.
+
 ## More information
 
 For more information about Giraffe, how to set up a development environment, contribution guidelines and more please visit the [main documentation](https://github.com/giraffe-fsharp/Giraffe#table-of-contents) page.
