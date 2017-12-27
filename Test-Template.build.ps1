@@ -154,25 +154,25 @@ task Get-Original {
 task Test-Permutations Install-Templates, {
     Invoke-Builds @(
         #some defaults
-        @{File='Test-Templates.build.ps1'; }
-        @{File='Test-Templates.build.ps1'; IncludeTests=$true}
-        @{File='Test-Templates.build.ps1'; UsePaket=$true}
-        @{File='Test-Templates.build.ps1'; IncludeTests=$true; UsePaket=$true}
+        @{File='Test-Template.build.ps1'; }
+        @{File='Test-Template.build.ps1'; IncludeTests=$true}
+        @{File='Test-Template.build.ps1'; UsePaket=$true}
+        @{File='Test-Template.build.ps1'; IncludeTests=$true; UsePaket=$true}
         #Giraffe
-        @{File='Test-Templates.build.ps1'; ViewEngine="Giraffe"; IncludeTests=$false; UsePaket=$false}
-        @{File='Test-Templates.build.ps1'; ViewEngine="Giraffe"; IncludeTests=$true; UsePaket=$false}
-        @{File='Test-Templates.build.ps1'; ViewEngine="Giraffe"; IncludeTests=$false; UsePaket=$true}
-        @{File='Test-Templates.build.ps1'; ViewEngine="Giraffe"; IncludeTests=$true; UsePaket=$true}
+        @{File='Test-Template.build.ps1'; ViewEngine="Giraffe"; IncludeTests=$false; UsePaket=$false}
+        @{File='Test-Template.build.ps1'; ViewEngine="Giraffe"; IncludeTests=$true; UsePaket=$false}
+        @{File='Test-Template.build.ps1'; ViewEngine="Giraffe"; IncludeTests=$false; UsePaket=$true}
+        @{File='Test-Template.build.ps1'; ViewEngine="Giraffe"; IncludeTests=$true; UsePaket=$true}
         #Razor
-        @{File='Test-Templates.build.ps1'; ViewEngine="Razor"; IncludeTests=$false; UsePaket=$false}
-        @{File='Test-Templates.build.ps1'; ViewEngine="Razor"; IncludeTests=$true; UsePaket=$false}
-        @{File='Test-Templates.build.ps1'; ViewEngine="Razor"; IncludeTests=$false; UsePaket=$true}
-        @{File='Test-Templates.build.ps1'; ViewEngine="Razor"; IncludeTests=$true; UsePaket=$true}
+        @{File='Test-Template.build.ps1'; ViewEngine="Razor"; IncludeTests=$false; UsePaket=$false}
+        @{File='Test-Template.build.ps1'; ViewEngine="Razor"; IncludeTests=$true; UsePaket=$false}
+        @{File='Test-Template.build.ps1'; ViewEngine="Razor"; IncludeTests=$false; UsePaket=$true}
+        @{File='Test-Template.build.ps1'; ViewEngine="Razor"; IncludeTests=$true; UsePaket=$true}
         #DotLiquid
-        @{File='Test-Templates.build.ps1'; ViewEngine="DotLiquid"; IncludeTests=$false; UsePaket=$false}
-        @{File='Test-Templates.build.ps1'; ViewEngine="DotLiquid"; IncludeTests=$true; UsePaket=$false}
-        @{File='Test-Templates.build.ps1'; ViewEngine="DotLiquid"; IncludeTests=$false; UsePaket=$true}
-        @{File='Test-Templates.build.ps1'; ViewEngine="DotLiquid"; IncludeTests=$true; UsePaket=$true}
+        @{File='Test-Template.build.ps1'; ViewEngine="DotLiquid"; IncludeTests=$false; UsePaket=$false}
+        @{File='Test-Template.build.ps1'; ViewEngine="DotLiquid"; IncludeTests=$true; UsePaket=$false}
+        @{File='Test-Template.build.ps1'; ViewEngine="DotLiquid"; IncludeTests=$false; UsePaket=$true}
+        @{File='Test-Template.build.ps1'; ViewEngine="DotLiquid"; IncludeTests=$true; UsePaket=$true}
     )
 }
 
