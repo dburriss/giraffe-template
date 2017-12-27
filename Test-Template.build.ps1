@@ -176,4 +176,26 @@ task Test-Permutations Install-Templates, {
     )
 }
 
+task Update-PaketLock -If (($UsePaket -eq $true) -and ($IncludeTests -eq $true)) New-Solution,{
+
+    "Updating 'paket.lock' for $ViewEngine"
+    if($ViewEngine -eq "DotLiquid"){
+        Copy-Item "$temp\paket.lock" "$originaldir\src\content\DotLiquid\paket.lock"
+    }
+    if($ViewEngine -eq "Giraffe"){
+        Copy-Item "$temp\paket.lock" "$originaldir\src\content\Giraffe\paket.lock"
+    }
+    if($ViewEngine -eq "Razor"){
+        Copy-Item "$temp\paket.lock" "$originaldir\src\content\Razor\paket.lock"
+    }
+}
+
+task Update-AllPaketLock {
+    Invoke-Builds @(
+        @{File='Test-Template.build.ps1'; Task='Update-PaketLock'; ViewEngine="DotLiquid"; IncludeTests=$true; UsePaket=$true}
+        @{File='Test-Template.build.ps1'; Task='Update-PaketLock'; ViewEngine="Giraffe"; IncludeTests=$true; UsePaket=$true}
+        @{File='Test-Template.build.ps1'; Task='Update-PaketLock'; ViewEngine="Razor"; IncludeTests=$true; UsePaket=$true}
+    )
+}
+
 task . New-Solution, Test-Artifacts, Start-Build, Remove-Temp, Open-Temp, Get-Original
